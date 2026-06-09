@@ -295,12 +295,12 @@ md.add_initialized_data('mu',[mu])
 #                               "gamma0", CONTACT_BOUNDARY, theta_contact, 'mu')
 #---
 # Augmented Lagrangian (obstacle is 'y<0')
-r = 1.e0
+r = 1.e+6
 md.add_initialized_data('r',[r])
 md.add_filtered_fem_variable('lambda_n', mf1, CONTACT_BOUNDARY)
 md.add_filtered_fem_variable('lambda_t', mf1, CONTACT_BOUNDARY)
 md.add_nodal_contact_with_rigid_obstacle_brick(mim, 'u', 'lambda_n', 'lambda_t', 
-                                               'r','mu',CONTACT_BOUNDARY,'y',1)
+                                               'r','mu',CONTACT_BOUNDARY,'y',2)
 # Time loop
 for timeStepIndex,timeStep in enumerate(np.arange(0.,T_max+dt,dt)):
     print('Time step: %9.5f' % timeStep)

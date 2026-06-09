@@ -278,21 +278,17 @@ fic.write(f"Time step: {0.0: 9.5f}, Energy: { energy:.17f}\n")
 #--------
 md.add_initialized_data('mu',[mu])
 #---
-# Nitsche method:
+# Penalisation method:
 #---
 Points = mf1D.basic_dof_nodes() #: Points of the mesh
 #Points = Points[:,Contact_S_dof]
 Dist = Points[1,:]  # - y_plane :Distance signée : ici, le socle est à y=0, donc distance = y_point
 md.add_initialized_fem_data('Dist', mf1D, Dist)
-##print('===> Dist'+str(Dist))
-theta_contact = 0  # Also possible : +1 or -1
-md.add_initialized_data('theta_contact',[theta_contact])
-gamma0 = 1.e+3
-md.add_initialized_data('gamma0',[gamma0])
-Neumannterm = md.Neumann_term('u', CONTACT_BOUNDARY)
 #
-md.add_Nitsche_contact_with_rigid_obstacle_brick(mim, 'u', Neumannterm, "Dist", 
-                               "gamma0", CONTACT_BOUNDARY, theta_contact, 'mu')
+r = 1.e10
+md.add_initialized_data('r',[r])
+md.add_penalized_contact_with_rigid_obstacle_brick(mim, 
+                                'u', 'Dist', 'r', 'mu',CONTACT_BOUNDARY, 1)
 # Time loop
 for timeStepIndex,timeStep in enumerate(np.arange(0.,T_max+dt,dt)):
     print('Time step: %9.5f' % timeStep)
@@ -301,7 +297,7 @@ for timeStepIndex,timeStep in enumerate(np.arange(0.,T_max+dt,dt)):
     md.set_variable("u",U)
     dU_old = 0.*U # Variable pour faire un test qui évite les cycles sur 2 itérations
 #=====
-# Contact (Nitche method)
+# Contact (Penalization method)
 #=====
 #Points = Points[:,Contact_S_dof]
     Dist = Points[1,:]+U[1::2] #- y_plane # Mise à jour de la distance
