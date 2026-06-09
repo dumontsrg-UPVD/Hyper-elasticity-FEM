@@ -2,7 +2,6 @@
 
 # ------------- A CHANGER ------------- #
 # Problem considered: 2D !!!
-# Version where only the outward normal is fixed (not the tangent)
 # Version considering Nitche method developed in Getfem (displacement)
 # ------------- A CHANGER ------------- #
 
@@ -266,8 +265,6 @@ md.add_nonlinear_term(mim, "(F_avg.SS):Grad_Test_u")
 #md.add_nonlinear_term(mim, "S(C):Grad_Test_u")
 #
 #Mass_matrix = md.matrix_term(Mass, 0)
-
-#md. add_nodal_contact_with_rigid_obstacle_brick(mim, varname_u, multname_n, multname_t=None, *args)
 # 
 mf.export_to_vtu('./results/Displacement_%05i.vtu' %0, mf, U, 'Displacement',V,'Velocity')
 #--------
@@ -307,17 +304,14 @@ for timeStepIndex,timeStep in enumerate(np.arange(0.,T_max+dt,dt)):
 # Contact (Nitche method)
 #=====
 #Points = Points[:,Contact_S_dof]
-    Dist = Points[1,:]+U[1::2] #- y_plane
+    Dist = Points[1,:]+U[1::2] #- y_plane # Mise à jour de la distance
     print('===> Min Dist : '+str(min(Dist)))
     md.set_variable('Dist',Dist)
     # debug
     if timeStepIndex % 100 == 0:  # in mỗi 100 step
         print(f"t={timeStep:.5f}, Dist_min={Dist.min():.6f}")
-
-    ###print(Dist)
-#    md.add_initialized_fem_data('Dist', mf1D, Dist)
 #=====
-# Resolution (contact frottant et plasticité)
+# Resolution (contact frottant et hyperélasticité)
 # ===== Solve nonlinear system =====
 #=====
     md.solve('lsolver','mumps','max_res',1E-06,'max_iter',20,'very_noisy')
