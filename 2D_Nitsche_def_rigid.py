@@ -304,7 +304,7 @@ for timeStepIndex,timeStep in enumerate(np.arange(0.,T_max+dt,dt)):
 # Contact (Nitche method)
 #=====
 #Points = Points[:,Contact_S_dof]
-    Dist = Points[1,:]+U[1::2] #- y_plane # Mise à jour de la distance
+#    Dist = Points[1,:]+U[1::2] #- y_plane # Mise à jour de la distance
 #    print('===> Min Dist : '+str(min(Dist)))
 #    md.set_variable('Dist',Dist)
     # debug
